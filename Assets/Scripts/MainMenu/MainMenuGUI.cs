@@ -18,6 +18,9 @@ public class MainMenuGUI : MonoBehaviour
     [Header("Settings Screen")]
     [SerializeField] private GameObject settingsScreenRoot;
     [SerializeField] private TMP_InputField playerNameInput;
+    [SerializeField] private Toggle fullscreenToggle;
+    [SerializeField] private TMP_Dropdown resolutionsDropdown;
+    private Resolution[] resolutions;
 
     [Header("Servers Screen")]
     [SerializeField] private GameObject serversScreenRoot;
@@ -75,6 +78,24 @@ public class MainMenuGUI : MonoBehaviour
             PlayerPrefs.SetString("playerName", "Hunter");
         }
         playerNameInput.SetTextWithoutNotify(PlayerPrefs.GetString("playerName"));
+
+        resolutions = Screen.resolutions;
+        Resolution current = Screen.currentResolution;
+        int currentRes = 0;
+        List<string> descs = new List<string>();
+        for (int i = 0; i < resolutions.Length; i++)
+        {
+            Resolution tmp = resolutions[i];
+            if (currentRes == 0 && current.width == tmp.width && current.height == tmp.height && current.refreshRate == tmp.refreshRate)
+            {
+                currentRes = i;
+            }
+            descs.Add(tmp.width + "x" + tmp.height + " (" + tmp.refreshRate + ")");
+        }
+        resolutionsDropdown.ClearOptions();
+        resolutionsDropdown.AddOptions(descs);
+        resolutionsDropdown.SetValueWithoutNotify(currentRes);
+        fullscreenToggle.isOn = Screen.fullScreen;
     }
 
 
@@ -86,11 +107,21 @@ public class MainMenuGUI : MonoBehaviour
         {
             PlayerPrefs.SetString("playerName", playerNameInput.text);
         }
+
+        Resolution res = resolutions[resolutionsDropdown.value];
+        Screen.SetResolution(res.width, res.height, fullscreenToggle.isOn, res.refreshRate);
+
         CloseSettings();
     }
 
 
     // Servers
+
+    public void ChangeBroadcastIP()
+    {
+        networkDiscovery.BroadcastAddress = ipInput.text;
+        SearchServers();
+    }
 
     public string GetLocalIPv4()
     {

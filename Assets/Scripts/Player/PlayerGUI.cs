@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using Mirror;
+using UnityEngine.SceneManagement;
 
 public class PlayerGUI : MonoBehaviour
 {
@@ -24,7 +26,14 @@ public class PlayerGUI : MonoBehaviour
 
     [Header("Pause Menu")]
     [SerializeField] private GameObject pauseMenuRoot;
+    [SerializeField] private GameObject normalPauseRoot;
+    [SerializeField] private GameObject settingsPauseRoot;
+    [SerializeField] private Toggle fullscreenToggle;
+    [SerializeField] private TMP_Dropdown resolutionsDropdown;
+    private Resolution[] resolutions;
     private bool lastScreenWasNormal;
+
+
 
     private Coroutine dmgAnimation;
 
@@ -45,6 +54,25 @@ public class PlayerGUI : MonoBehaviour
         {
             cams[i].SetActive(i == 0);
         }
+
+
+        resolutions = Screen.resolutions;
+        Resolution current = Screen.currentResolution;
+        int currentRes = 0;
+        List<string> descs = new List<string>();
+        for (int i = 0; i < resolutions.Length; i++)
+        {
+            Resolution tmp = resolutions[i];
+            if (currentRes == 0 && current.width == tmp.width && current.height == tmp.height && current.refreshRate == tmp.refreshRate)
+            {
+                currentRes = i;
+            }
+            descs.Add(tmp.width + "x" + tmp.height + " (" + tmp.refreshRate + ")");
+        }
+        resolutionsDropdown.ClearOptions();
+        resolutionsDropdown.AddOptions(descs);
+        resolutionsDropdown.SetValueWithoutNotify(currentRes);
+        fullscreenToggle.isOn = Screen.fullScreen;
     }
 
 
@@ -73,16 +101,28 @@ public class PlayerGUI : MonoBehaviour
             normalGUIRoot.SetActive(true);
         }
         pauseMenuRoot.SetActive(false);
+        normalPauseRoot.SetActive(true);
+        settingsPauseRoot.SetActive(false);
     }
 
     public void QuitGame()
     {
-
+        NetworkManager.singleton.StopClient();
+        SceneManager.LoadScene("MainMenu");
     }
 
     public void OpenSettings()
     {
+        normalPauseRoot.SetActive(false);
+        settingsPauseRoot.SetActive(true);
+    }
 
+    public void ApplyAndCloseSettings()
+    {
+        Resolution res = resolutions[resolutionsDropdown.value];
+        Screen.SetResolution(res.width, res.height, fullscreenToggle.isOn, res.refreshRate);
+        normalPauseRoot.SetActive(true);
+        settingsPauseRoot.SetActive(false);
     }
 
     public void OpenCameraMenu()
