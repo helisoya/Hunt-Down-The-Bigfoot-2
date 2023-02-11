@@ -3611,6 +3611,8 @@ MonoBehaviour:
   cam: {fileID: 7881059826152121803}
   bodyAnimator: {fileID: 7742840494100178762}
   gunAnimator: {fileID: 4363359493277831212}
+  capsuleCollider: {fileID: 7922084921756735978}
+  gunRoot: {fileID: 7815891787402526681}
   speed: 5
   sensibility: 5
   maxXRot: 90

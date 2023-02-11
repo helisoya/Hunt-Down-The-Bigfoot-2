@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Mirror;
 
-public class InteractableObject : MonoBehaviour
+public class InteractableObject : NetworkBehaviour
 {
     protected bool playerInZone;
 
@@ -26,7 +27,7 @@ public class InteractableObject : MonoBehaviour
 
     protected virtual void OnTriggerEnter(Collider col)
     {
-        if (col.tag == "Player")
+        if (col.tag == "Player" && col.gameObject == Player.local)
         {
             playerInZone = true;
             PlayerGUI.instance.SetHint(hint);
@@ -35,7 +36,7 @@ public class InteractableObject : MonoBehaviour
 
     protected virtual void OnTriggerExit(Collider col)
     {
-        if (col.tag == "Player")
+        if (col.tag == "Player" && col.gameObject == Player.local)
         {
             playerInZone = false;
             PlayerGUI.instance.SetHint("");

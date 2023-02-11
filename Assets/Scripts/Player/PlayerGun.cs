@@ -15,8 +15,6 @@ public class PlayerGun : NetworkBehaviour
     [SerializeField] private int dmg = 1;
     [SerializeField] private float maxDistance = 100;
     [SerializeField] private LayerMask mask;
-    [SerializeField] private GameObject bulletPrefab;
-    [SerializeField] private Transform barrel;
 
     [Header("Animations Timing")]
     [SerializeField] private float reloadTime;
@@ -52,7 +50,7 @@ public class PlayerGun : NetworkBehaviour
 
     void Update()
     {
-        if (!Player.localPlayerCanMove) return;
+        if (!Player.localPlayerCanMove || Player.localPlayerInVehicule) return;
 
         if (Time.time - lastAction < waitFor || Input.GetKey(KeyCode.LeftShift)) return;
 

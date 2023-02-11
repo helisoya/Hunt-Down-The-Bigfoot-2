@@ -5,6 +5,7 @@ using UnityEngine;
 public class Player
 {
     public static bool localPlayerCanMove;
+    public static bool localPlayerInVehicule;
 
     public static GameObject local;
     public static PlayerGun gun;
