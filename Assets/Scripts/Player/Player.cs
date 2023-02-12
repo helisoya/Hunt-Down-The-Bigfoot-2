@@ -9,6 +9,7 @@ public class Player
 
     public static GameObject local;
     public static PlayerGun gun;
+    public static GolfCart localDrivenVehicule;
 
     public static Dictionary<string, GameObject> playerList;
 

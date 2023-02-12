@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using Mirror;
 using UnityEngine.SceneManagement;
 
-public class PlayerGUI : MonoBehaviour
+public class PlayerGUI : NetworkBehaviour
 {
     [Header("Normal GUI")]
     [SerializeField] private GameObject normalGUIRoot;
@@ -107,7 +107,14 @@ public class PlayerGUI : MonoBehaviour
 
     public void QuitGame()
     {
-        NetworkManager.singleton.StopClient();
+        if (isServer)
+        {
+            NetworkManager.singleton.StopHost();
+        }
+        else
+        {
+            NetworkManager.singleton.StopClient();
+        }
         SceneManager.LoadScene("MainMenu");
     }
 

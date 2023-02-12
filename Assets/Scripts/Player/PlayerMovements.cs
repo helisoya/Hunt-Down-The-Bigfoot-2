@@ -28,6 +28,8 @@ public class PlayerMovements : NetworkBehaviour
 
     private int currentSpeed;
 
+    private Transform vehiculeRoot;
+
     void Start()
     {
         Cursor.lockState = CursorLockMode.Confined;
@@ -37,6 +39,17 @@ public class PlayerMovements : NetworkBehaviour
     bool IsGrounded()
     {
         return Physics.Raycast(groundDetector.position, -Vector3.up, 0.5f);
+    }
+
+
+    void FixedUpdate()
+    {
+        if (Player.localPlayerCanMove && Player.localPlayerInVehicule)
+        {
+            Player.localDrivenVehicule.UpdateVehicule();
+            transform.position = vehiculeRoot.position;
+            transform.eulerAngles = vehiculeRoot.eulerAngles;
+        }
     }
 
     void Update()
@@ -84,12 +97,11 @@ public class PlayerMovements : NetworkBehaviour
 
     public void EnterVehicule(Transform root)
     {
+        vehiculeRoot = root;
         transform.eulerAngles = Vector3.zero;
-        Command_SetColliderActive(false, root);
+        Command_SetColliderActive(false);
         transform.position = root.position;
         gunRoot.SetActive(false);
-
-        transform.SetParent(root);
         bodyAnimator.SetTrigger("drivingStart");
         Player.localPlayerInVehicule = true;
 
@@ -97,35 +109,31 @@ public class PlayerMovements : NetworkBehaviour
 
     public void ExitVehicule()
     {
+        vehiculeRoot = null;
         gunRoot.SetActive(true);
-        transform.SetParent(null);
         bodyAnimator.SetTrigger("drivingEnd");
         Player.localPlayerInVehicule = false;
         transform.position += transform.right * 3;
-        Command_SetColliderActive(true, null);
+        Command_SetColliderActive(true);
     }
 
 
     [Command(requiresAuthority = false)]
-    void Command_SetColliderActive(bool value, Transform parent)
+    void Command_SetColliderActive(bool value)
     {
-        print("On Server");
         if (capsuleCollider != null)
         {
             capsuleCollider.enabled = value;
             rb.isKinematic = !value;
-            transform.SetParent(parent);
         }
 
-        RpcClient_SetColliderActive(value, parent);
+        RpcClient_SetColliderActive(value);
     }
 
     [ClientRpc]
-    void RpcClient_SetColliderActive(bool value, Transform parent)
+    void RpcClient_SetColliderActive(bool value)
     {
-        print("On Client");
         capsuleCollider.enabled = value;
         rb.isKinematic = !value;
-        transform.SetParent(parent);
     }
 }
