@@ -1057,6 +1057,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 056390b8204816440b9a86f0cef36993, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  text: {fileID: 0}
 --- !u!1 &2191274663891446407
 GameObject:
   m_ObjectHideFlags: 0
@@ -3606,6 +3607,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 073472544c2bc954fb7e98e80e172107, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0.1
   rb: {fileID: 4185053789029341009}
   groundDetector: {fileID: 2026043242837936282}
   cam: {fileID: 7881059826152121803}
@@ -3638,9 +3642,6 @@ MonoBehaviour:
   mask:
     serializedVersion: 2
     m_Bits: 64
-  bulletPrefab: {fileID: 756489058646749826, guid: ed9d9d3af74b510488ddc21df37be0cc,
-    type: 3}
-  barrel: {fileID: 8743490366739881900}
   reloadTime: 1
   fireTime: 0.7
   bodyAnimator: {fileID: 7742840494100178762}
@@ -3677,6 +3678,7 @@ MonoBehaviour:
   - {fileID: 2181625135763492991}
   listObjectsToDisableIfNotLocal:
   - {fileID: 7881059826152121798}
+  playerName: {fileID: 5756950652148907034}
 --- !u!136 &7922084921756735978
 CapsuleCollider:
   m_ObjectHideFlags: 0

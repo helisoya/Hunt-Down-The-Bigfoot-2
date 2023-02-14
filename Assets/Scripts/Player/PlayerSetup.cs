@@ -10,6 +10,7 @@ public class PlayerSetup : NetworkBehaviour
     [SerializeField] private GameObject[] listObjectsToDisableIfLocal;
     [SerializeField] private GameObject[] listObjectsToDisableIfNotLocal;
 
+    [SerializeField] private PlayerNameText playerName;
 
 
     public override void OnStopClient()
@@ -48,6 +49,21 @@ public class PlayerSetup : NetworkBehaviour
             {
                 obj.SetActive(false);
             }
+
+            Command_ChangePlayerName(PlayerPrefs.GetString("playerName"));
         }
+    }
+
+    [Command(requiresAuthority = false)]
+    void Command_ChangePlayerName(string name)
+    {
+        playerName.SetText(name);
+        RpcClient_ChangePlayerName(name);
+    }
+
+    [ClientRpc]
+    void RpcClient_ChangePlayerName(string name)
+    {
+        playerName.SetText(name);
     }
 }
