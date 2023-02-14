@@ -18,31 +18,48 @@ public class GolfCart : InteractableObject
     [SerializeField] private float accelerationForce = 500f;
     [SerializeField] private float breakForce = 300f;
     [SerializeField] private float maxTurnAngle = 15f;
-    private float currentAccelerationForce;
-    private float currentBreakForce;
-    private float currentTurnAngle;
+    [SyncVar] private float currentAccelerationForce;
+    [SyncVar] float currentBreakForce;
+    [SyncVar] float currentTurnAngle;
 
 
     public void UpdateVehicule()
     {
         currentAccelerationForce = accelerationForce * Input.GetAxis("Vertical");
-        currentBreakForce = Input.GetKeyDown(KeyCode.Space) ? breakForce : 0;
+        currentBreakForce = Input.GetKey(KeyCode.Space) ? breakForce : 0;
         currentTurnAngle = maxTurnAngle * Input.GetAxis("Horizontal");
+        //print(currentAccelerationForce + " " + currentBreakForce + " " + currentTurnAngle);
 
-        Command_Values(currentAccelerationForce, currentBreakForce, currentTurnAngle);
+        Command_SetValues(currentAccelerationForce, currentBreakForce, currentTurnAngle);
     }
 
-    void FixedUpdate()
+    [Command(requiresAuthority = false)]
+    public void CheckZRotation()
     {
-        frontLeft.steerAngle = currentTurnAngle;
-        frontRight.steerAngle = currentTurnAngle;
-
-        frontLeft.motorTorque = currentAccelerationForce;
-        frontRight.motorTorque = currentAccelerationForce;
-
-        frontLeft.brakeTorque = currentBreakForce;
-        frontRight.brakeTorque = currentBreakForce;
+        if (transform.eulerAngles.z != 0)
+        {
+            transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, 0);
+        }
     }
+
+    [Command(requiresAuthority = false)]
+    void Command_SetValues(float accel, float brake, float turn)
+    {
+        currentAccelerationForce = accel;
+        currentBreakForce = brake;
+        currentTurnAngle = turn;
+
+        frontLeft.steerAngle = turn;
+        frontRight.steerAngle = turn;
+
+        frontLeft.motorTorque = accel;
+        frontRight.motorTorque = accel;
+
+        frontLeft.brakeTorque = brake;
+        frontRight.brakeTorque = brake;
+    }
+
+
 
     protected override void Interaction()
     {
@@ -51,7 +68,7 @@ public class GolfCart : InteractableObject
             Player.localDrivenVehicule = null;
             SetPlayerDriving("");
             Player.local.GetComponent<PlayerMovements>().ExitVehicule();
-            Command_Values(0, breakForce, 0);
+            Command_SetValues(0, breakForce, 0);
         }
         else if (playerDriving == "")
         {
@@ -76,26 +93,4 @@ public class GolfCart : InteractableObject
         playerDriving = val;
     }
 
-
-    [Command(requiresAuthority = false)]
-    void Command_Values(float accel, float brake, float turn)
-    {
-        if (backLeft != null)
-        {
-            currentAccelerationForce = accel;
-            currentBreakForce = brake;
-            currentTurnAngle = turn;
-        }
-
-
-        RpcClient_Values(accel, brake, turn);
-    }
-
-    [ClientRpc]
-    void RpcClient_Values(float accel, float brake, float turn)
-    {
-        currentAccelerationForce = accel;
-        currentBreakForce = brake;
-        currentTurnAngle = turn;
-    }
 }

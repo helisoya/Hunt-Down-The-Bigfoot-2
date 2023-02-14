@@ -44,16 +44,23 @@ public class PlayerMovements : NetworkBehaviour
 
     void FixedUpdate()
     {
-        if (Player.localPlayerCanMove && Player.localPlayerInVehicule)
+        if (Player.localPlayerInVehicule && Player.localPlayerCanMove)
         {
-            Player.localDrivenVehicule.UpdateVehicule();
-            transform.position = vehiculeRoot.position;
-            transform.eulerAngles = vehiculeRoot.eulerAngles;
+            if (Player.localPlayerCanMove)
+            {
+                Player.localDrivenVehicule.UpdateVehicule();
+            }
         }
     }
 
     void Update()
     {
+        if (Player.localPlayerInVehicule)
+        {
+            Player.localDrivenVehicule.CheckZRotation();
+            transform.position = vehiculeRoot.position;
+            transform.eulerAngles = vehiculeRoot.eulerAngles;
+        }
 
         if (!Player.localPlayerCanMove) return;
 
@@ -113,8 +120,9 @@ public class PlayerMovements : NetworkBehaviour
         gunRoot.SetActive(true);
         bodyAnimator.SetTrigger("drivingEnd");
         Player.localPlayerInVehicule = false;
-        transform.position += transform.right * 3;
+        transform.position += transform.up * 3;
         Command_SetColliderActive(true);
+        transform.eulerAngles = new Vector3(0, transform.eulerAngles.y, 0);
     }
 
 

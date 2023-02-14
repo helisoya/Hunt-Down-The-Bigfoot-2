@@ -25,6 +25,8 @@ public class PlayerSetup : NetworkBehaviour
 
         Player.AddPlayer(GetComponent<NetworkIdentity>().netId.ToString(), gameObject);
 
+        gameObject.name = "Hunter (" + GetComponent<NetworkIdentity>().netId.ToString() + ")";
+
         if (!isLocalPlayer)
         {
             foreach (MonoBehaviour behaviour in listScriptsToDisableIfNotLocal)
