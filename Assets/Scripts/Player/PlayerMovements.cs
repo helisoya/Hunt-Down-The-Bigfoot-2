@@ -14,6 +14,7 @@ public class PlayerMovements : NetworkBehaviour
     [SerializeField] private Animator gunAnimator;
     [SerializeField] private Collider capsuleCollider;
     [SerializeField] private GameObject gunRoot;
+    [SerializeField] private GameObject flashlight;
 
 
 
@@ -99,6 +100,11 @@ public class PlayerMovements : NetworkBehaviour
             bodyAnimator.SetTrigger("jump");
         }
 
+
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            flashlight.SetActive(!flashlight.activeInHierarchy);
+        }
     }
 
 

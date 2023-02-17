@@ -41,6 +41,10 @@ public class PlayerGUI : NetworkBehaviour
 
     [HideInInspector] public PlayerHealth playerHealthScript;
 
+    void OnGUI()
+    {
+        GUI.Label(new Rect(0, 0, 100, 100), ((int)(1.0f / Time.smoothDeltaTime)).ToString());
+    }
 
     void Awake()
     {
