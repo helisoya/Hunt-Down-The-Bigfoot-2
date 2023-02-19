@@ -34,6 +34,12 @@ public class PlayerGUI : NetworkBehaviour
     private bool lastScreenWasNormal;
 
 
+    [Header("Leaderboard")]
+    [SerializeField] private GameObject leaderboardRoot;
+    [SerializeField] private Transform leaderboardPrefabRoot;
+    [SerializeField] private GameObject leaderboardPrefab;
+
+
 
     private Coroutine dmgAnimation;
 
@@ -56,7 +62,7 @@ public class PlayerGUI : NetworkBehaviour
         RefreshText(8, 32);
         for (int i = 0; i < cams.Length; i++)
         {
-            cams[i].SetActive(i == 0);
+            cams[i].SetActive(false);
         }
 
 
@@ -87,10 +93,42 @@ public class PlayerGUI : NetworkBehaviour
             if (pauseMenuRoot.activeInHierarchy) ClosePauseMenu();
             else OpenPauseMenu();
         }
+
+
+        if (Input.GetKeyDown(KeyCode.Tab) && !cameraGUIRoot.activeInHierarchy && !pauseMenuRoot.activeInHierarchy)
+        {
+            OpenLeaderboard();
+        }
+        else if (Input.GetKeyUp(KeyCode.Tab) && leaderboardRoot.activeInHierarchy)
+        {
+            CloseLeaderboard();
+        }
     }
+
+    public void OpenLeaderboard()
+    {
+        leaderboardRoot.SetActive(true);
+
+        foreach (string id in Player.playerList.Keys)
+        {
+            Instantiate(leaderboardPrefab, leaderboardPrefabRoot).GetComponent<PlayerLeaderboard>().SetPlayer(id);
+        }
+    }
+
+    public void CloseLeaderboard()
+    {
+        foreach (Transform child in leaderboardPrefabRoot)
+        {
+            Destroy(child.gameObject);
+        }
+
+        leaderboardRoot.SetActive(false);
+    }
+
 
     public void OpenPauseMenu()
     {
+        CloseLeaderboard();
         lastScreenWasNormal = normalGUIRoot.activeInHierarchy;
         Player.localPlayerCanMove = false;
         normalGUIRoot.SetActive(false);
@@ -138,6 +176,8 @@ public class PlayerGUI : NetworkBehaviour
 
     public void OpenCameraMenu()
     {
+        CloseLeaderboard();
+        cams[currentCam].SetActive(true);
         Player.localPlayerCanMove = false;
         normalGUIRoot.SetActive(false);
         cameraGUIRoot.SetActive(true);
@@ -145,6 +185,7 @@ public class PlayerGUI : NetworkBehaviour
 
     public void CloseCameraMenu()
     {
+        cams[currentCam].SetActive(false);
         Player.localPlayerCanMove = true;
         normalGUIRoot.SetActive(true);
         cameraGUIRoot.SetActive(false);

@@ -3733,7 +3733,7 @@ MonoBehaviour:
   capsuleCollider: {fileID: 7922084921756735978}
   gunRoot: {fileID: 7815891787402526681}
   flashlight: {fileID: 4281728863472234089}
-  speed: 5
+  speed: 4
   sensibility: 5
   maxXRot: 90
 --- !u!114 &4351451495578988511

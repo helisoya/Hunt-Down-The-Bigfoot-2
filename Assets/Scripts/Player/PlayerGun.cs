@@ -28,9 +28,9 @@ public class PlayerGun : NetworkBehaviour
     [SerializeField] private ParticleSystem flare;
 
 
-    [SyncVar] private int goodShots;
-    [SyncVar] private int missedShots;
-    [SyncVar] private int friendlyShots;
+    [SyncVar, HideInInspector] public int goodShots;
+    [SyncVar, HideInInspector] public int missedShots;
+    [SyncVar, HideInInspector] public int friendlyShots;
 
 
     public bool canRefill
