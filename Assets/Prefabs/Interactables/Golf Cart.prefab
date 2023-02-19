@@ -313,8 +313,8 @@ MonoBehaviour:
   frontRight: {fileID: 3538585801764863152}
   backLeft: {fileID: 3538585801362839148}
   backRight: {fileID: 3538585801995992640}
-  accelerationForce: 50
-  breakForce: 50
+  accelerationForce: 200
+  breakForce: 200
   maxTurnAngle: 15
 --- !u!65 &3538585800646787111
 BoxCollider:
