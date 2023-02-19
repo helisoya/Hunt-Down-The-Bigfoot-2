@@ -27,6 +27,14 @@ public class BigfootAI : NetworkBehaviour
     private Transform playerTarget;
 
 
+
+    void OnDrawGizmos()
+    {
+        Gizmos.color = Color.blue;
+        Gizmos.DrawLine(transform.position, agent.destination);
+    }
+
+
     void Start()
     {
         instance = this;
@@ -82,14 +90,23 @@ public class BigfootAI : NetworkBehaviour
 
     void FindNextWalkPosition()
     {
-        Vector3 randomDirection = Random.insideUnitSphere * walkRadius;
+        Vector3 randomDirection;
+        Vector3 waypoint = new Vector3(-5, -5, -5);
 
-        NavMeshHit hit;
-        if (NavMesh.SamplePosition(randomDirection, out hit, walkRadius, 1))
+        NavMeshPath path = new NavMeshPath();
+        while (!(agent.CalculatePath(waypoint, path) && path.status == NavMeshPathStatus.PathComplete))
         {
-            agent.SetDestination(hit.position);
-            agent.isStopped = false;
+            randomDirection = new Vector3(Random.Range(0, 500), 0, Random.Range(0, 500));
+            NavMeshHit hit;
+            if (NavMesh.SamplePosition(randomDirection, out hit, walkRadius, 1))
+            {
+                waypoint = hit.position;
+            }
         }
+
+
+        agent.SetDestination(waypoint);
+        agent.isStopped = false;
 
         if (fleeAtAllCost)
         {
