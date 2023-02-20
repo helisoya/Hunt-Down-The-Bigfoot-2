@@ -14,6 +14,8 @@ public class BigfootAI : NetworkBehaviour
     [SerializeField] private int maxHealth;
     [SerializeField] private float walkRadius;
     [SerializeField] private int damage;
+    [SerializeField] private int maxBulletsBeforeFlee = 3;
+
 
     [Header("Components")]
     [SerializeField] private NetworkAnimator animator;
@@ -25,6 +27,8 @@ public class BigfootAI : NetworkBehaviour
     private bool fleeAtAllCost = false;
     private bool rage = false;
     private Transform playerTarget;
+    private int currentBullets = 0;
+
 
 
 
@@ -45,6 +49,7 @@ public class BigfootAI : NetworkBehaviour
         }
         else
         {
+            currentBullets = 0;
             currentHealth = maxHealth;
             animator.animator.SetBool("moving", true);
             agent.speed = speed;
@@ -64,7 +69,6 @@ public class BigfootAI : NetworkBehaviour
 
             agent.SetDestination(playerTarget.position);
 
-            print(agent.remainingDistance);
             if (agent.remainingDistance <= 1.5f)
             {
                 playerTarget.GetComponent<PlayerHealth>().TakeDamage(damage);
@@ -81,6 +85,7 @@ public class BigfootAI : NetworkBehaviour
 
     void Flee()
     {
+        currentBullets = 0;
         rage = false;
         FindNextWalkPosition();
         fleeAtAllCost = true;
@@ -131,11 +136,17 @@ public class BigfootAI : NetworkBehaviour
             agent.isStopped = false;
             animator.SetTrigger("dead");
         }
+        else if (rage)
+        {
+            currentBullets++;
+            if (currentBullets >= maxBulletsBeforeFlee)
+            {
+                Flee();
+            }
+        }
         else if (!fleeAtAllCost && !rage)
         {
             rage = true;
-
-
             playerTarget = Player.GetRandomPlayer().transform;
         }
     }
