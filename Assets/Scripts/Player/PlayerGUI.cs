@@ -39,6 +39,13 @@ public class PlayerGUI : NetworkBehaviour
     [SerializeField] private Transform leaderboardPrefabRoot;
     [SerializeField] private GameObject leaderboardPrefab;
 
+    [Header("Win Screen")]
+    [SerializeField] private GameObject winScreenRoot;
+    [SerializeField] private Image winGoodFill;
+    [SerializeField] private Image winMissedFill;
+    [SerializeField] private Image winFriendlyFill;
+
+
     [Header("Other")]
     public Transform respawnPoint;
 
@@ -49,10 +56,7 @@ public class PlayerGUI : NetworkBehaviour
 
     [HideInInspector] public PlayerHealth playerHealthScript;
 
-    void OnGUI()
-    {
-        GUI.Label(new Rect(0, 0, 100, 100), ((int)(1.0f / Time.smoothDeltaTime)).ToString());
-    }
+
 
     void Awake()
     {
@@ -106,6 +110,26 @@ public class PlayerGUI : NetworkBehaviour
             CloseLeaderboard();
         }
     }
+
+
+    public void OpenWinScreen()
+    {
+        normalGUIRoot.SetActive(false);
+        pauseMenuRoot.SetActive(false);
+        cameraGUIRoot.SetActive(false);
+        leaderboardRoot.SetActive(false);
+        winScreenRoot.SetActive(true);
+
+        int good = Player.gun.goodShots;
+        int missed = Player.gun.missedShots;
+        int friendly = Player.gun.friendlyShots;
+        float total = good + missed + friendly;
+
+        winFriendlyFill.fillAmount = friendly / total;
+        winGoodFill.fillAmount = good / total;
+        winMissedFill.fillAmount = missed / total;
+    }
+
 
     public void OpenLeaderboard()
     {

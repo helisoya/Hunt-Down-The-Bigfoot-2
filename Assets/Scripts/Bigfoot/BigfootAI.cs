@@ -60,6 +60,11 @@ public class BigfootAI : NetworkBehaviour
 
     void Update()
     {
+        if (currentHealth == 0)
+        {
+            return;
+        }
+
         if (rage)
         {
             if (playerTarget == null)
@@ -122,6 +127,19 @@ public class BigfootAI : NetworkBehaviour
 
     }
 
+    IEnumerator BigfootDeath()
+    {
+        yield return new WaitForSeconds(5);
+
+        Player.localPlayerCanMove = false;
+        PlayerGUI.instance.OpenWinScreen();
+    }
+
+    [ClientRpc]
+    void RpcClient_Death()
+    {
+        StartCoroutine(BigfootDeath());
+    }
 
 
     [Command(requiresAuthority = false)]
@@ -133,8 +151,9 @@ public class BigfootAI : NetworkBehaviour
         if (currentHealth == 0)
         {
             // Die Sequence
-            agent.isStopped = false;
+            agent.isStopped = true;
             animator.SetTrigger("dead");
+            RpcClient_Death();
         }
         else if (rage)
         {
