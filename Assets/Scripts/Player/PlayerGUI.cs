@@ -39,6 +39,8 @@ public class PlayerGUI : NetworkBehaviour
     [SerializeField] private Transform leaderboardPrefabRoot;
     [SerializeField] private GameObject leaderboardPrefab;
 
+    [Header("Other")]
+    public Transform respawnPoint;
 
 
     private Coroutine dmgAnimation;

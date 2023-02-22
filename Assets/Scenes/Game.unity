@@ -3439,6 +3439,7 @@ MonoBehaviour:
   leaderboardPrefabRoot: {fileID: 870171265}
   leaderboardPrefab: {fileID: 2274037275626907739, guid: acca31edbffa1bb4aa2d4d745bb9cb8c,
     type: 3}
+  respawnPoint: {fileID: 401375055}
   playerHealthScript: {fileID: 0}
 --- !u!114 &667120775
 MonoBehaviour:

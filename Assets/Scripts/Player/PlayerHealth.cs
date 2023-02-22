@@ -30,21 +30,39 @@ public class PlayerHealth : NetworkBehaviour
     {
         currentHealth = Mathf.Clamp(currentHealth - dmg, 0, maxHealth);
 
+        bool isDead = false;
+        if (currentHealth == 0)
+        {
+            isDead = true;
+            currentHealth = maxHealth;
+        }
+
         if (enabled)
         {
             PlayerGUI.instance.StartDamageAnimation();
             PlayerGUI.instance.UpdatePlayerHealth();
         }
-        RefreshHealth();
+
+        if (isLocalPlayer && isDead)
+        {
+            transform.position = PlayerGUI.instance.respawnPoint.position;
+        }
+
+        RefreshHealth(isDead);
     }
 
     [ClientRpc]
-    public void RefreshHealth()
+    public void RefreshHealth(bool isDead)
     {
         if (enabled)
         {
             PlayerGUI.instance.StartDamageAnimation();
             PlayerGUI.instance.UpdatePlayerHealth();
+        }
+
+        if (isLocalPlayer && isDead)
+        {
+            transform.position = PlayerGUI.instance.respawnPoint.position;
         }
     }
 
