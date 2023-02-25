@@ -31,6 +31,8 @@ public class PlayerSetup : NetworkBehaviour
 
         if (!isLocalPlayer)
         {
+            GetComponentInChildren<AudioListener>().enabled = false;
+
             foreach (MonoBehaviour behaviour in listScriptsToDisableIfNotLocal)
             {
                 behaviour.enabled = false;

@@ -17,6 +17,9 @@ public class PlayerMovements : NetworkBehaviour
     [SerializeField] private GameObject flashlight;
 
 
+    [SerializeField] private PlayerSound sound;
+
+
 
     [Header("Stats")]
     [SerializeField] private int speed;
@@ -91,6 +94,14 @@ public class PlayerMovements : NetworkBehaviour
             rb.velocity = new Vector3(PlayerMovement.x, rb.velocity.y, PlayerMovement.z);
         }
 
+        if (moving && !sound.isMoveSoundPlaying)
+        {
+            sound.CmdSetWalkSound(true);
+        }
+        else if (!moving && sound.isMoveSoundPlaying)
+        {
+            sound.CmdSetWalkSound(false);
+        }
 
         transform.Rotate(0f, PlayerCamMovement.x * sensibility, 0f);
 
@@ -117,6 +128,11 @@ public class PlayerMovements : NetworkBehaviour
         gunRoot.SetActive(false);
         bodyAnimator.SetTrigger("drivingStart");
         Player.localPlayerInVehicule = true;
+
+        if (sound.isMoveSoundPlaying)
+        {
+            sound.CmdSetWalkSound(false);
+        }
 
     }
 

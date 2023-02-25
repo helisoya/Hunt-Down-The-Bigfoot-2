@@ -9,6 +9,8 @@ public class PlayerHealth : NetworkBehaviour
     [SerializeField] private int maxHealth;
     [SyncVar] private int currentHealth;
 
+    [SerializeField] private PlayerSound sound;
+
     public int GetCurrentHealth()
     {
         return currentHealth;
@@ -29,6 +31,8 @@ public class PlayerHealth : NetworkBehaviour
     public void TakeDamage(int dmg)
     {
         currentHealth = Mathf.Clamp(currentHealth - dmg, 0, maxHealth);
+
+        sound.CmdAddSound("PlayerHurt");
 
         bool isDead = false;
         if (currentHealth == 0)

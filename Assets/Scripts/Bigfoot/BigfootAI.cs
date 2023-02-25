@@ -20,6 +20,8 @@ public class BigfootAI : NetworkBehaviour
     [Header("Components")]
     [SerializeField] private NetworkAnimator animator;
     [SerializeField] private NavMeshAgent agent;
+    [SerializeField] private NetworkSound sound;
+    [SerializeField] private AudioSource moveSound;
 
 
     public static BigfootAI instance;
@@ -129,6 +131,7 @@ public class BigfootAI : NetworkBehaviour
 
     IEnumerator BigfootDeath()
     {
+        moveSound.enabled = false;
         yield return new WaitForSeconds(5);
 
         Player.localPlayerCanMove = false;
@@ -147,6 +150,8 @@ public class BigfootAI : NetworkBehaviour
     {
         currentHealth = Mathf.Clamp(currentHealth - dmg, 0, maxHealth);
         RpcClient_UpdateHealth(currentHealth, maxHealth);
+
+        sound.CmdAddSound("BigfootHurt");
 
         if (currentHealth == 0)
         {

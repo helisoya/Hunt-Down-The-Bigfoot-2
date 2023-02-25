@@ -26,6 +26,7 @@ public class PlayerGun : NetworkBehaviour
     [SerializeField] private NetworkAnimator bodyAnimator;
     [SerializeField] private Animator handAnimator;
     [SerializeField] private ParticleSystem flare;
+    [SerializeField] private PlayerSound sound;
 
 
     [SyncVar, HideInInspector] public int goodShots;
@@ -72,6 +73,7 @@ public class PlayerGun : NetworkBehaviour
         lastAction = Time.time;
         handAnimator.SetTrigger("reload");
         bodyAnimator.SetTrigger("reload");
+        sound.CmdAddSound("reload");
         while (currentAmmoInClip < maxAmmoInClip && currentTotalAmmo > 0)
         {
             currentAmmoInClip++;
@@ -84,6 +86,7 @@ public class PlayerGun : NetworkBehaviour
     {
         currentTotalAmmo = maxAmmo;
         RefreshText();
+        sound.CmdAddSound("ammoPickup");
     }
 
     void Fire()
@@ -96,6 +99,7 @@ public class PlayerGun : NetworkBehaviour
         flare.Play();
         RefreshText();
 
+        sound.CmdAddSound("Gunshot");
 
         Transform cam = Camera.main.transform;
 
@@ -136,4 +140,5 @@ public class PlayerGun : NetworkBehaviour
     {
         PlayerGUI.instance.RefreshText(currentAmmoInClip, currentTotalAmmo);
     }
+
 }
